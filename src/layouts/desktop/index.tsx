@@ -5,9 +5,6 @@ import "./index.less";
 
 import Dock from "./components/Dock";
 import Calendar from "./components/Calendar";
-import { CreateWindow } from "./components/Window";
-
-import dockRouter from "@/router/dock";
 
 export default function Desktop() {
   /**

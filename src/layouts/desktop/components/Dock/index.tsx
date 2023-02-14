@@ -3,8 +3,6 @@ import React from "react";
 import dock from "@/router/dock";
 import { CreateWindow } from "@/layouts/desktop/components/Window";
 
-console.log(dock, "dock");
-
 export default function Dock() {
   return (
     <div className="dock-cont">
