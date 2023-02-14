@@ -1,0 +1,31 @@
+.markdown-box{
+  display: flex;
+  .markdown-nav{
+    width: 20vw;
+    overflow-y: scroll;
+    height: 100vh;
+    background: white;
+    padding: 10px 15px;
+    a{
+      display: block;
+      line-height: 30px;
+    }
+    a[name=H2]{
+      font-size: 14px;
+    }
+    a[name=H3]{
+      font-size: 12px;
+      padding-left: 10px;
+    }
+    .md-nav-act{
+      color: pink;
+    }
+  }
+  .markdown-body{
+    width: 80vh;
+    padding: 20px 30px;
+    height: 100vh;
+    overflow-y: scroll;
+    flex: 1;
+  }
+}

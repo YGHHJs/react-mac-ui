@@ -1,0 +1,62 @@
+.calendar-shade{
+  width: 100vw;
+  height: 100vh;
+  z-index: 100001;
+  position: fixed;
+  left: 0;
+  top: 0;
+  user-select: none;
+  .calendar{
+    width: 200px;
+    background: rgba(255,255,255,0.6);
+    position: fixed;
+    right: 0;
+    top: 30px;
+    backdrop-filter: blur(20px);
+    animation: calendarAnimation 0.5s;
+    .now{
+      text-align: center;
+      font-weight: bold;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(0,0,0, 0.1);
+    }
+    .calendar-info{
+      padding: 10px 5px 0 10px;
+      i{
+        cursor: pointer;
+      }
+    }
+    .calendar-main{
+      .calendar-week,.day-cont{
+        display: flex;
+        flex-wrap: wrap;
+        div{
+          width: calc(100% / 7);
+          text-align: center;
+          line-height: 28px;
+          cursor: pointer;
+        }
+        div.prev-day{
+          color: #666;
+          opacity: 0.8;
+        }
+        div.today{
+          background: pink;
+          border-radius: 4px;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+@keyframes calendarAnimation {
+  from{
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to{
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
