@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 import windowStore from "../../store/window";
-import { closeWindowSetGray, setGrayMode } from "./helper";
+import { closeWindowSetGray, selectParentNodeByClass, setGrayMode } from "./helper";
 import { WindowProps } from "./typing";
 
 import "./index.less";
@@ -35,25 +35,78 @@ const Window: React.FC<WindowProps> = ({ menus }) => {
     right: 0,
   });
 
-  const windowClose = (e: React.MouseEvent<HTMLElement>) => {
+  const inset = useRef<{
+    left: string;
+    top: string;
+    bottom: string;
+    right: string;
+  }>({
+    top: "calc(10vh - 0px)",
+    right: "calc(10vw - 0px)",
+    bottom: "calc(10vh - 0px)",
+    left: "calc(10vw - 0px)",
+  });
+
+  const windowResize = (e: React.MouseEvent<HTMLElement>, direction: string) => {
+    setIsShade(true);
+    const window = selectParentNodeByClass(e.target as HTMLElement, "window");
+    const { style, offsetWidth, offsetHeight } = window;
+    window.classList.add("window-no-transition");
+    const instList: string[] = [style.top, style.right, style.bottom, style.left];
+    const moveStarX = e.clientX;
+    const moveStarY = e.clientY;
+    document.onmousemove = (ev) => {
+      console.log(window.offsetWidth);
+      const h = ev.clientY - moveStarY;
+      const x = ev.clientX - moveStarX;
+      switch (direction) {
+        case "top":
+          window.style.top = `calc(10vh - ${parseInt(instList[0].split(" ").at(-1) as string, 10) - h}px)`;
+          break;
+        case "right":
+          window.style.right = `calc(10vw - ${parseInt(instList[1].split(" ").at(-1) as string, 10) + x}px)`;
+          break;
+        case "bottom":
+          window.style.bottom = `calc(10vw - ${parseInt(instList[2].split(" ").at(-1) as string, 10) + h}px)`;
+          break;
+        default:
+          window.style.left = `calc(10vw - ${parseInt(instList[3].split(" ").at(-1) as string, 10) - x}px)`;
+          break;
+      }
+    };
+    document.onmouseup = () => {
+      setIsShade(false);
+      window.classList.remove("window-no-transition");
+      document.onmousemove = null;
+      (e.target as HTMLElement).onmousedown = null;
+    };
+  };
+
+  const windowClose = async (e: React.MouseEvent<HTMLElement>) => {
+    setIsMax(false);
     e.stopPropagation();
     setIsClose(true);
-    const target = (((e.target as HTMLDivElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-      .parentNode as HTMLDivElement;
-    target.remove();
     closeWindowSetGray();
-    closeWait.current = setTimeout(() => {}, 250);
+    closeWait.current = await setTimeout(() => {
+      selectParentNodeByClass(e.target as HTMLDivElement, "window-container").remove();
+    }, 1000);
+  };
+
+  /**
+   * 窗口最小切换
+   */
+  const toggleMin = () => {
+    setIsMax(false);
+    closeWait.current = setTimeout(() => {
+      setIsMax(true);
+    }, 1000);
+    return isMin ? setIsMin(false) : setIsMin(true);
   };
 
   useEffect(() => () => {
     clearTimeout(closeWait.current as Timeout);
     closeWait.current = null;
   });
-
-  /**
-   * 窗口最小切换
-   */
-  const toggleMin = () => (isMin ? setIsMin(false) : setIsMin(true));
 
   /**
    * 窗口最大化切换
@@ -105,7 +158,10 @@ const Window: React.FC<WindowProps> = ({ menus }) => {
         className={["window", isMax ? "window-max" : "", isMin ? "window-min" : "", isClose ? "window-close" : ""]
           .filter((s) => s)
           .join(" ")}
-        style={{ zIndex: windowStore.getZIndex() }}
+        style={{
+          zIndex: windowStore.getZIndex(),
+          inset: `${inset.current.top} ${inset.current.right} ${inset.current.bottom} ${inset.current.left}`,
+        }}
       >
         <div onDoubleClick={(event) => toggleMax(event)} className="window-top flex-between">
           <div className="window-option">
@@ -116,6 +172,7 @@ const Window: React.FC<WindowProps> = ({ menus }) => {
           <div className="window-history">
             <i className="iconfont icon-left" title="后退" />
             <i className="iconfont icon-right" title="前进" />
+            {inset.current.top}
           </div>
           <div className="window-title">
             <i className="iconfont icon-trumpet" />
@@ -125,6 +182,31 @@ const Window: React.FC<WindowProps> = ({ menus }) => {
         <div className="window-main">
           <iframe title="你好押" src={path.current} />
           {isShade ? <div className="iframe-shade" /> : ""}
+        </div>
+        <div className="win-resize-helper">
+          <div className="line-top" onMouseDown={(event) => windowResize(event, "top")} />
+          <div
+            className="line-right"
+            onMouseDown={(event) => {
+              windowResize(event, "right");
+            }}
+          />
+          <div
+            className="line-bottom"
+            onMouseDown={(event) => {
+              windowResize(event, "bottom");
+            }}
+          />
+          <div
+            className="line-left"
+            onMouseDown={(event) => {
+              windowResize(event, "left");
+            }}
+          />
+          <span className="dot-one" />
+          <span className="dot-two" />
+          <span className="dot-three" />
+          <span className="dot-four" />
         </div>
       </div>
     </Draggable>

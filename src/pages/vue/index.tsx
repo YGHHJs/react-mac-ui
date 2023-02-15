@@ -11,7 +11,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 const Vue: React.FC = () => {
   const [mdContent, setMdContent] = useState("");
   useEffect(() => {
-    fetch("/src/pages/vue/README.md")
+    fetch("/vue3/README.md")
       .then((res) => res.blob())
       .then((blob) => {
         const reader = new FileReader();

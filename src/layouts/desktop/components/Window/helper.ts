@@ -3,11 +3,11 @@
  * @param target
  * @param className
  */
-export const selectParentNodeByClass = (target: HTMLElement, className: string): HTMLElement | undefined => {
-  if ((target.parentNode as HTMLElement).className.includes(className)) {
+export const selectParentNodeByClass = (target: HTMLElement, className: string): HTMLElement => {
+  if ((target.parentNode as HTMLElement)?.className?.includes(className)) {
     return target.parentNode as HTMLElement;
   }
-  selectParentNodeByClass(target.parentNode as HTMLElement, className);
+  return selectParentNodeByClass(target.parentNode as HTMLElement, className);
 };
 
 /**
@@ -31,7 +31,6 @@ export const closeWindowSetGray = () => {
   [...windowList].forEach((item) => {
     console.log(item);
     if ((item as HTMLElement).style.zIndex === String(maxZIndex)) {
-      console.log(1);
       (item as HTMLElement).classList.remove("gray");
     }
   });
