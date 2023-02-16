@@ -67,7 +67,7 @@ const Window: React.FC<WindowProps> = ({ menus }) => {
           window.style.right = `calc(10vw - ${parseInt(instList[1].split(" ").at(-1) as string, 10) + x}px)`;
           break;
         case "bottom":
-          window.style.bottom = `calc(10vw - ${parseInt(instList[2].split(" ").at(-1) as string, 10) + h}px)`;
+          window.style.bottom = `calc(10vh - ${parseInt(instList[2].split(" ").at(-1) as string, 10) + h}px)`;
           break;
         default:
           window.style.left = `calc(10vw - ${parseInt(instList[3].split(" ").at(-1) as string, 10) - x}px)`;
